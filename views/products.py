@@ -1,6 +1,10 @@
+"""
+Products views
+"""
+
 # from main import app  - циклический импорт
 from flask import Blueprint, render_template, request, url_for, redirect
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import NotFound
 
 from views.forms.products import CreateProductForm
 
@@ -13,13 +17,24 @@ PRODUCTS = {
     3: "Tablet",
 }
 
+
 @products_app.route("/", endpoint="list")
 def get_products():
-    return render_template("products/list.html", products=PRODUCTS)  # рендер темплита и передача продуктов в шаблон
+    """
+    get_products
+    :return:
+    """
+    return render_template("products/list.html", products=PRODUCTS)
+    # рендер темплита и передача продуктов в шаблон
 
 
 @products_app.route("/<int:product_id>/", endpoint="details")
 def get_product(product_id: int):
+    """
+    get_product
+    :param product_id:
+    :return:
+    """
     product_name = PRODUCTS.get(product_id)
     if product_name is None:
         raise NotFound(f"Product {product_id} not found")
@@ -30,9 +45,12 @@ def get_product(product_id: int):
     )
 
 
-
 @products_app.route("/add/", methods=["GET", "POST"], endpoint="add")
 def add_product():
+    """
+    add_product
+    :return:
+    """
     form = CreateProductForm()
 
     if request.method == "GET":
@@ -46,12 +64,11 @@ def add_product():
     # if not product_name:
     #     raise BadRequest("Field 'product-name' is required")
 
-    product_name = form.name.data  # вынесли часть логики в форму (закоментированный блок выше - аналогично, но сложнее)
+    product_name = form.name.data
+    # вынесли часть логики в форму (закоментированный блок выше - аналогично, но сложнее)
 
     product_id = len(PRODUCTS) + 1
     PRODUCTS[product_id] = product_name
 
     url = url_for("products_app.details", product_id=product_id)
     return redirect(url)
-
-
