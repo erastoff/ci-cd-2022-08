@@ -3,7 +3,7 @@ Products views
 """
 
 # from main import app  - циклический импорт
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, render_template, request, redirect
 from werkzeug.exceptions import NotFound
 
 from views.forms.products import CreateProductForm
@@ -58,17 +58,10 @@ def add_product():
 
     if not form.validate_on_submit():
         return render_template("products/add.html", form=form), 400
-    print(request.form)
-    # product_name = request.form.get("product-name", "")
-    # product_name = product_name.strip()
-    # if not product_name:
-    #     raise BadRequest("Field 'product-name' is required")
 
     product_name = form.name.data
     # вынесли часть логики в форму (закоментированный блок выше - аналогично, но сложнее)
 
-    product_id = len(PRODUCTS) + 1
-    PRODUCTS[product_id] = product_name
+    print(product_name)
 
-    url = url_for("products_app.details", product_id=product_id)
-    return redirect(url)
+    return redirect('/')
